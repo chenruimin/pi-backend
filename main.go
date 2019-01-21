@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+	"math/rand"
+	"fmt"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -22,7 +24,6 @@ func setupRouter() *gin.Engine {
 	config.AllowCredentials = true
 	r.Use(cors.New(config))
 
-	// Ping test
 	r.POST("/login", func(c *gin.Context) {
 		var json Login
 		if err := c.ShouldBindJSON(&json); err != nil {
@@ -34,6 +35,17 @@ func setupRouter() *gin.Engine {
 		} else {
 			c.JSON(http.StatusOK, gin.H{"match": false})
 		}
+	})
+
+	r.GET("/statscards/capacity", func(c *gin.Context) {
+		randomValue := rand.Intn(191) + 10
+		c.JSON(http.StatusOK, gin.H{
+			"type": "warning",
+			"icon": "ti-server",
+			"title": "Capacity",
+			"value": fmt.Sprintf("%dGB", randomValue),
+			"footerText": "Updated now",
+			"footerIcon": "ti-reload"})
 	})
 
 	return r
